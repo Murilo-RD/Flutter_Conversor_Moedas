@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
 var request =
@@ -15,23 +13,29 @@ class ConversorPage extends StatefulWidget {
 }
 
 class _ConversorPageState extends State<ConversorPage> {
-  @override
+  double? dollar;
+  double? euro;
+
   Future<Map<String, dynamic>> getData() async {
     http.Response response = await http.get(request);
     return json.decode(response.body);
   }
 
+  @override
   Widget build(BuildContext context) {
     getData();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Color(0xff383521),
+        backgroundColor: Colors.amber,
         centerTitle: true,
         title: Text(
           'Conversor de Moedas',
           style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w800, fontSize: 25),
+            color: Colors.black,
+            fontWeight: FontWeight.w800,
+            fontSize: 25,
+          ),
         ),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
@@ -51,10 +55,59 @@ class _ConversorPageState extends State<ConversorPage> {
                 ),
               );
             default:
-              break;
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    "ERRO ao Carregar Dados :(",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 25,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              } else {
+                dollar = double.parse(snapshot.data!["USDBRL"]["ask"]);
+                euro = double.parse(snapshot.data!["EURBRL"]["ask"]);
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Icon(
+                        Icons.monetization_on_outlined,
+                        color: Colors.amber,
+                        size: 200,
+                      ),
+                      buildTextFromField('Reais', 'R\$'),
+                      SizedBox(height: 20,),
+                      buildTextFromField('Euros', '€'),
+                      SizedBox(height: 20,),
+                      buildTextFromField('Dólares', '\$')
+                    ],
+                  ),
+                );
+              }
           }
         },
       ),
     );
   }
+}
+
+Widget buildTextFromField(String label,String prefix){
+  return TextFormField(
+    keyboardType: TextInputType.number,
+    style: TextStyle(color: Colors.amber,fontSize: 25),
+    decoration: InputDecoration(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      prefixStyle: TextStyle(color: Colors.amber,fontSize: 25),
+      prefixText: prefix ,
+      labelText: label,
+      labelStyle: TextStyle(
+        color: Colors.amber,
+        fontSize: 25,
+      ),
+    ),
+  );
 }

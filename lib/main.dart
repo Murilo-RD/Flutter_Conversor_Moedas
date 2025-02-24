@@ -6,6 +6,16 @@ void main(){
   runApp(MaterialApp(
       home: Home(),
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        highlightColor: Colors.amber,
+        primaryColor:Colors.white,
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder:
+            OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+          focusedBorder:
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+        )
+      ),
   ));
 }
 
