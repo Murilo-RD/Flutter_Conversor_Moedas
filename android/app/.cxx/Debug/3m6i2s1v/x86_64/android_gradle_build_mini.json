@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\xacar\\dev\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\xacar\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\xacar\\Desktop\\Projetos\\Flutter\\Flutter_Conversor_Moedas\\android\\app\\.cxx\\Debug\\3m6i2s1v\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\xacar\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\xacar\\Desktop\\Projetos\\Flutter\\Flutter_Conversor_Moedas\\android\\app\\.cxx\\Debug\\3m6i2s1v\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

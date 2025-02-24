@@ -1,0 +1,2 @@
+C:/Users/xacar/Desktop/Projetos/Flutter/Flutter_Conversor_Moedas/android/app/.cxx/Debug/3m6i2s1v/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/xacar/Desktop/Projetos/Flutter/Flutter_Conversor_Moedas/android/app/.cxx/Debug/3m6i2s1v/arm64-v8a/CMakeFiles/rebuild_cache.dir
