@@ -2,14 +2,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-var request =
-    Uri.parse('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL');
+var request = Uri.parse('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL');
 
 class ConversorPage extends StatefulWidget {
   const ConversorPage({super.key});
 
   @override
   State<ConversorPage> createState() => _ConversorPageState();
+}
+
+Future<Map<String, dynamic>> getData() async {
+  http.Response response = await http.get(request);
+  return json.decode(response.body);
 }
 
 class _ConversorPageState extends State<ConversorPage> {
@@ -20,60 +24,62 @@ class _ConversorPageState extends State<ConversorPage> {
   final TextEditingController dollarController = TextEditingController();
   final TextEditingController realController = TextEditingController();
 
-  Future<Map<String, dynamic>> getData() async {
-    http.Response response = await http.get(request);
-    return json.decode(response.body);
+  void _realChanged(String text) {
+    double real = double.parse(text);
+    dollarController.text = (real / dollar!).toStringAsFixed(2);
+    euroController.text = (real / euro!).toStringAsFixed(2);
   }
 
-  Widget buildTextFromField(String label,String prefix,TextEditingController controller){
+  void _dollarChanged(String text) {
+    double valDolar = double.parse(text);
+    realController.text = (valDolar * dollar!).toStringAsFixed(2);
+    euroController.text = ((valDolar * dollar!) / euro!).toStringAsFixed(2);
+  }
+
+  void _euroChanged(String text) {
+    double valEuro = double.parse(text);
+    realController.text = (valEuro * euro!).toStringAsFixed(2);
+    dollarController.text = ((valEuro * euro!) / dollar!).toStringAsFixed(2);
+  }
+
+  Widget buildTextFromField(String label, String prefix,
+      TextEditingController controller, Function(String text) f) {
     return TextFormField(
       keyboardType: TextInputType.number,
       controller: controller,
-      onFieldSubmitted: (String value){
-        setState(() {
-          try {
-            double aux = 0;
-            if(label == 'Dólares'){
-              aux = double.parse(value!);
-              realController.text = (aux*dollar!).toString();
-              euroController.text = ((aux*dollar!)/euro!).toString();
-            }else if(label == 'Euros'){
-              aux = double.parse(value!);
-              realController.text = (aux*euro!).toString();
-              dollarController.text = ((aux*euro!)/dollar!).toString();
-            }else{
-              aux = double.parse(value!);
-              dollarController.text = (aux/dollar!).toString();
-              euroController.text = (aux/euro!).toString();
-
-            }
-          } on Exception catch (e) {
-            print ('ok');
-          }
-        });
-
-      } ,
-      style: TextStyle(color: Colors.amber,fontSize: 25),
+      style: TextStyle(color: Colors.amber, fontSize: 25),
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        prefixStyle: TextStyle(color: Colors.amber,fontSize: 25),
-        prefixText: prefix ,
+        prefixStyle: TextStyle(color: Colors.amber, fontSize: 25),
+        prefixText: prefix,
         labelText: label,
         labelStyle: TextStyle(
           color: Colors.amber,
           fontSize: 25,
         ),
       ),
+      onChanged: f,
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-   // getData();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              dollarController.clear();
+              realController.clear();
+              euroController.clear();
+            },
+            icon: Icon(
+              Icons.refresh,
+              color: Colors.black,
+            ),
+          )
+        ],
         backgroundColor: Colors.amber,
         centerTitle: true,
         title: Text(
@@ -117,7 +123,8 @@ class _ConversorPageState extends State<ConversorPage> {
                 dollar = double.parse(snapshot.data!["USDBRL"]["ask"]);
                 euro = double.parse(snapshot.data!["EURBRL"]["ask"]);
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -126,11 +133,18 @@ class _ConversorPageState extends State<ConversorPage> {
                         color: Colors.amber,
                         size: 200,
                       ),
-                      buildTextFromField('Reais', 'R\$',realController),
-                      SizedBox(height: 20,),
-                      buildTextFromField('Euros', '€',euroController),
-                      SizedBox(height: 20,),
-                      buildTextFromField('Dólares', '\$',dollarController)
+                      buildTextFromField(
+                          'Reais', 'R\$', realController, _realChanged),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      buildTextFromField(
+                          'Euros', '€', euroController, _euroChanged),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      buildTextFromField(
+                          'Dólares', '\$', dollarController, _dollarChanged)
                     ],
                   ),
                 );
@@ -141,5 +155,3 @@ class _ConversorPageState extends State<ConversorPage> {
     );
   }
 }
-
-
