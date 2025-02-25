@@ -24,19 +24,35 @@ class _ConversorPageState extends State<ConversorPage> {
   final TextEditingController dollarController = TextEditingController();
   final TextEditingController realController = TextEditingController();
 
+
+  void clear(){
+    dollarController.clear();
+    realController.clear();
+    euroController.clear();
+  }
+
   void _realChanged(String text) {
+    if(text.isEmpty){
+      clear();
+    }
     double real = double.parse(text);
     dollarController.text = (real / dollar!).toStringAsFixed(2);
     euroController.text = (real / euro!).toStringAsFixed(2);
   }
 
   void _dollarChanged(String text) {
+    if(text.isEmpty){
+      clear();
+    }
     double valDolar = double.parse(text);
     realController.text = (valDolar * dollar!).toStringAsFixed(2);
     euroController.text = ((valDolar * dollar!) / euro!).toStringAsFixed(2);
   }
 
   void _euroChanged(String text) {
+    if(text.isEmpty){
+      clear();
+    }
     double valEuro = double.parse(text);
     realController.text = (valEuro * euro!).toStringAsFixed(2);
     dollarController.text = ((valEuro * euro!) / dollar!).toStringAsFixed(2);
